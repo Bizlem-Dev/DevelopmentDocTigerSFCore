@@ -62,6 +62,8 @@ import java.net.URL;
 public class DocGenService {
 	final static Logger logger = Logger.getLogger(DocGenService.class);
 	ResourceBundle bundle = ResourceBundle.getBundle("config");
+	static ResourceBundle bundleststic = ResourceBundle.getBundle("config");
+
 	QRCode objQRCode = new QRCode();
 	 ConvertServiceImpl convertService;
 
@@ -166,10 +168,15 @@ JSONObject QRobj = new JSONObject();
 			    	}
 					
 					String Coverimageurl= "";
-					if (obj.has("Coverimageurl")) { 
+					String Coverimage_tableNo= "";
+					if (obj.has("Coverimageurl") &&  obj.has("Coverimage_tableNo") ){ 
 						Coverimageurl=obj.getString("Coverimageurl");
+						Coverimage_tableNo=obj.getString("Coverimage_tableNo");
 						logger.info(" Coverimageurl :"+Coverimageurl);
+						logger.info(" Coverimage_tableNo :"+Coverimage_tableNo);
 						obj.remove("Coverimageurl");
+						obj.remove("Coverimage_tableNo");
+
 
 			    	}
 					String floorplanstring= "";
@@ -206,9 +213,9 @@ JSONObject QRobj = new JSONObject();
 					        data.put(key, value);
 					    	}
 					    }
-						int coverimagetableno=1;
+						//int coverimagetableno=1;
 						int logoimagetableno=1;
-						int qrCodeTableNumber =2;
+						//int qrCodeTableNumber =2;
 //						try{
 //							qrCodeTableNumber = Integer.parseInt(obj.getString("qrCodeTableNumber"));
 //						}catch(Exception e){
@@ -221,19 +228,25 @@ JSONObject QRobj = new JSONObject();
 
 					//	url = bundle.getString("doc_loc_ip")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_PDF;
 				url = bundle.getString("doc_loc_ip")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_PDF;
-						
+						logger.info("outputFilename "+outputFilename);
+						logger.info("outputPdfPath "+outputPdfPath);
+						logger.info("outputDocxPath "+outputDocxPath);
+
 						
 						byte[] modifiedFileArr = null;
 						//is qr code present
-						if(qrCodeTableNumber>1 && QRobj!=null && (!Coverimageurl.equals(""))){
-							logger.info("qrCodeTableNumber  in if "+qrCodeTableNumber);
+						//if(qrCodeTableNumber>1 && QRobj!=null && (!Coverimageurl.equals(""))){
+							if( QRobj!=null ){
+
+							logger.info("qrCodeTableNumber  in if "+QRobj.getString("TableNo"));
 							logger.info("templateFileVO.getTemaplatePath() "+templateFileVO.getTemaplatePath());
 							logger.info("Coverimageurl in if "+Coverimageurl);
-							modifiedFileArr =addQRCode (templateFileVO.getTemaplatePath(),  qrCodeTableNumber,  QRobj);
-
-							modifiedFileArr=addCoverImage(modifiedFileArr, Coverimageurl, coverimagetableno, 420, 460);
+							modifiedFileArr =addQRCode (templateFileVO.getTemaplatePath(),  Integer.parseInt(QRobj.getString("TableNo")),  QRobj);
+                       if(!Coverimageurl.equals("")) {
+							modifiedFileArr=addCoverImage(modifiedFileArr, Coverimageurl, Integer.parseInt(Coverimage_tableNo), 420, 460);
+                            }
 						//	modifiedFileArr=addLogo(modifiedFileArr, logourl, logoimagetableno, 80, 50);
-							modifiedFileArr=addfloorplan(modifiedFileArr, floorplanstring,  300, 350);
+						//	modifiedFileArr=addfloorplan(modifiedFileArr, floorplanstring,  300, 350);
 
 							
 							DocxToPdfConvertor.replaceParamsInDocxFile(sfobj, modifiedFileArr, outputDocxPath, data);
@@ -243,6 +256,7 @@ JSONObject QRobj = new JSONObject();
 
 						}else{
 								logger.info("in else QRCode ");
+								logger.info("templateFileVO.getTemaplatePath()"+ templateFileVO.getTemaplatePath());
 								DocxToPdfConvertor.replaceParamsInDocxFile(sfobj, templateFileVO.getTemaplatePath(), outputDocxPath, data);
 //								//RtfToPdfConvertor.convertDocxFileToPDF(outputDocxPath, outputPdfPath, data, bundle.getString("doc_loc"));
 //								String applicationId=bundle.getString("applicationId");
@@ -272,37 +286,40 @@ JSONObject QRobj = new JSONObject();
                         String secretKey=bundle.getString("secretKey");
                         logger.info("secretKey*  "+secretKey);
                         
-//                        RestTemplate restTemplate = new RestTemplate();
-//				         
-//				         
-//				         JSONObject jsonObj = new JSONObject();
-//				         jsonObj.put("applicationId", applicationId);
-//				         jsonObj.put("secretKey", secretKey);
-//				         jsonObj.put("inputDocxFilePath", outputDocxPath);
-//				         jsonObj.put("outputPdfFilePath", outputPdfPath);
-//				         
-//				         HttpHeaders headers = new HttpHeaders();
-//				         headers.setContentType(MediaType.APPLICATION_JSON);	
-//				         
-//				         HttpEntity<String> entity = new HttpEntity<String>(jsonObj.toString(),headers);
-//				         String answer = restTemplate.postForObject(bundle.getString("convertorServiceUrl"), entity, String.class);
-//				         System.out.println(answer);
-//				    
-//				         logger.info("3*  ");
-//				         System.out.println(answer);
-//				         logger.info("4*  ");
+                        RestTemplate restTemplate = new RestTemplate();
+				         
+				         
+				         JSONObject jsonObj = new JSONObject();
+				         jsonObj.put("applicationId", applicationId);
+				         jsonObj.put("secretKey", secretKey);
+				         jsonObj.put("inputDocxFilePath", outputDocxPath);
+				         jsonObj.put("outputPdfFilePath", outputPdfPath);
+				         logger.info("jsonObj= "+jsonObj.toString());
+				         HttpHeaders headers = new HttpHeaders();
+				         headers.setContentType(MediaType.APPLICATION_JSON);	
+				         logger.info("headers= "+headers);
+				         
+				         HttpEntity<String> entity = new HttpEntity<String>(jsonObj.toString(),headers);
+				         logger.info("22*  ");
+				         String answer = restTemplate.postForObject(bundle.getString("convertorServiceUrl"), entity, String.class);
+				         System.out.println(answer);
+				    
+				         logger.info("3*  ");
+				         logger.info(answer);
+				         logger.info("4*  ");
                       
                         
-						logger.info(templateFileVO.getTemaplatePath());
+						logger.info("url "+url);
 									    
-	//					DocxToPdfConvertor.replaceParamsInDocxFile( sfobj, templateFileVO.getTemaplatePath(), bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, data);
-	//					RtfToPdfConvertor.convertDocxFileToPDF(bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, outputPdfPath, data, bundle.getString("doc_loc"));
+	                   //	DocxToPdfConvertor.replaceParamsInDocxFile( sfobj, templateFileVO.getTemaplatePath(), bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, data);
+	                   //	RtfToPdfConvertor.convertDocxFileToPDF(bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, outputPdfPath, data, bundle.getString("doc_loc"));
 	
 	
 						
-						JSONArray promotionarr= new JSONArray(promotion);
+			/*			JSONArray promotionarr= new JSONArray(promotion);
 						JSONArray urlarr = new JSONArray();
 						for(int i=0;i<promotionarr.length(); i++) {
+							try {
 							String Temlatename=promotionarr.getString(i);
 							String filename=Temlatename+".docx";
 							logger.info("Temlatename "+Temlatename);
@@ -318,33 +335,38 @@ JSONObject QRobj = new JSONObject();
 						logger.info("templateFileVO1.getTemaplatePath() "+templateFileVO1.getTemaplatePath());
 					  DocxToPdfConvertor.replaceParamsInDocxFile(sfobj, templateFileVO1.getTemaplatePath(), outputDocxPath1, data);
 						
-				//		RestTemplate restTemplate = new RestTemplate();
+				   //		RestTemplate restTemplate = new RestTemplate();
 				         logger.info("outputPdfPath1 "+outputPdfPath1);
 				         logger.info("outputDocxPath1 "+outputDocxPath1);
 				         logger.info("url"+url);
 				         
-//				         JSONObject jsonObj1 = new JSONObject();
-//				         jsonObj1.put("applicationId", applicationId);
-//				         jsonObj1.put("secretKey", secretKey);
-//				         jsonObj1.put("inputDocxFilePath", outputDocxPath1);
-//				         jsonObj1.put("outputPdfFilePath", outputPdfPath1);
-//				         
-//				         HttpHeaders headers1 = new HttpHeaders();
-//				         headers1.setContentType(MediaType.APPLICATION_JSON);	
-//				         
-//				         HttpEntity<String> entity1 = new HttpEntity<String>(jsonObj1.toString(),headers1);
-//				         String answer1 = restTemplate.postForObject(bundle.getString("convertorServiceUrl"), entity1, String.class);
-//				         System.out.println(answer1);
-//				        logger.info(answer1);
-//
-//				         logger.info("3*  ");
-//				         System.out.println(answer1);
-//				         logger.info("4*  ");
+				         JSONObject jsonObj1 = new JSONObject();
+				         jsonObj1.put("applicationId", applicationId);
+				         jsonObj1.put("secretKey", secretKey);
+				         jsonObj1.put("inputDocxFilePath", outputDocxPath1);
+				         jsonObj1.put("outputPdfFilePath", outputPdfPath1);
+				         
+				         HttpHeaders headers1 = new HttpHeaders();
+				         headers1.setContentType(MediaType.APPLICATION_JSON);	
+				         
+				         HttpEntity<String> entity1 = new HttpEntity<String>(jsonObj1.toString(),headers1);
+				         String answer1 = restTemplate.postForObject(bundle.getString("convertorServiceUrl"), entity1, String.class);
+				         System.out.println(answer1);
+				        logger.info(answer1);
+
+				         logger.info("3*  ");
+				         System.out.println(answer1);
+				         logger.info("4*  ");
                      
 						url=url+","+url1;
 						
-						}}
+						}
 						
+						}catch(Exception e) {
+							
+						}
+							}
+						*/
 						
 						
 						
@@ -352,8 +374,8 @@ JSONObject QRobj = new JSONObject();
 						
 					}catch (Exception e) {
 						e.printStackTrace();
-					logger.info(e.getMessage());
-					return "error "+e.getMessage();
+					logger.info("exc in docgenservice = "+e);
+				//	return "error "+e.getMessage();
 				}
 				return url;
 			}
@@ -595,7 +617,10 @@ JSONObject QRobj = new JSONObject();
 //
 //		is.close();
 //		os.close();
-		String urltopdfderv= "http://35.188.238.145:8080/DocTigerSF/pdffromurl?pdfurl="+pdfurl+"&destinationFile="+destinationFile	;
+			String currentIP= bundleststic.getString("currentIp");
+		String urltopdfderv= "http://"+currentIP+":8080/DocTigerSFCore/pdffromurl?pdfurl="+pdfurl+"&destinationFile="+destinationFile	;
+	//	String urltopdfderv= "http://35.188.238.145:8080/DocTigerSF/pdffromurl?pdfurl="+pdfurl+"&destinationFile="+destinationFile	;
+
 		logger.info("pdffromurl urll --"+urltopdfderv );
 		System.out.println("pdffromurl urll --"+urltopdfderv);
 	String status=	ApiCall.callGetApi(urltopdfderv);

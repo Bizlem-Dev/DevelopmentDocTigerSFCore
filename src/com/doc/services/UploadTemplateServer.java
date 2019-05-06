@@ -167,7 +167,7 @@ System.out.println(bis);
 		String remotePath = "/home/ubuntu/uploaded-templates/";
 		
 		//UploadTemplateServer ftp = new UploadTemplateServer("35.188.238.145",22,"ubuntu","$DocTiger@123$");
-		UploadTemplateServer ftp = new UploadTemplateServer("35.186.166.22",22,"root","B1!4z5L$e#m@Or#@GIn");
+		UploadTemplateServer ftp = new UploadTemplateServer("104.196.62.35",22,"root","B1!4z5L$e#m@Or#@GIn");
 		
 	//	ftp.upload(localPath, remotePath);
 		

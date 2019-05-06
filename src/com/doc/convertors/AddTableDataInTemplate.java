@@ -303,9 +303,9 @@ public class AddTableDataInTemplate {
 	public static byte[] addQRCodeInTable(String path, String imagePath, int tableNumber) throws FileNotFoundException, IOException, XmlException, InvalidFormatException{
 		ByteArrayOutputStream baos = null;
 
-		
+		XWPFDocument doc=null;
 		try{
-		XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
+		 doc = new XWPFDocument(new FileInputStream(path));
 	
 		XWPFTable table = doc.getTableArray(tableNumber-1);
 		//get row 2 
@@ -344,6 +344,11 @@ logger.info("**"+run.get(0).getText(0));
 		//imgStream.close();
 		}catch(Exception e ) {
 		logger.info("addTabledata  "  +e.getMessage());
+		
+		baos = new ByteArrayOutputStream();
+		doc.write(baos);
+		doc.close();
+		
 		}
 		return baos.toByteArray();
 

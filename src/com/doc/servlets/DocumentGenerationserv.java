@@ -37,7 +37,14 @@ public class DocumentGenerationserv extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+    	try {
+    		PrintWriter out=resp.getWriter();
+          out.println("in get method");
+    	}catch(Exception e){
+    		
+    	}
+    }
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PrintWriter out=null;
@@ -96,7 +103,12 @@ public class DocumentGenerationserv extends HttpServlet {
 
 			
 			//UploadTemplateServer ut=new UploadTemplateServer("35.201.178.201",22,"ubuntu","B!zL3M786");
-			UploadTemplateServer ut=new UploadTemplateServer("35.221.183.246",22,"ubuntu","B!zL3M786");
+			String SFservIP= bundle.getString("SFservIP");//35.221.183.246
+			String SFservusername=bundle.getString("SFservusername");
+				String 	SFservpass=bundle.getString("SFservpass");//B!zL3M786
+			UploadTemplateServer ut=new UploadTemplateServer(SFservIP,22,SFservusername,SFservpass);
+
+			//UploadTemplateServer ut=new UploadTemplateServer("35.221.183.246",22,"ubuntu","B!zL3M786");
                       //	FileUploadServer fus= new FileUploadServer("35.188.238.145",22,"ubuntu","$DocTiger@123$");
 		      logger.info("a1 ");
 	   //   String a=ut.connect();

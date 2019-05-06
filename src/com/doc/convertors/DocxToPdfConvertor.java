@@ -1,13 +1,16 @@
 package com.doc.convertors;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.docx4j.Docx4jProperties;
 import org.docx4j.XmlUtils;
 import org.docx4j.convert.out.pdf.PdfConversion;
@@ -64,7 +68,7 @@ public class DocxToPdfConvertor {
 	final static Logger log = Logger.getLogger(DocxToPdfConvertor.class);
 
 	public static void convertDocxFileToPDF(byte[] addedTable, String pdfPath, Map<String, Object> paramsMap) {
-		try {
+		try { 
 			WordprocessingMLPackage wordMLPackage = readDocxFile(addedTable);
 			prepare(wordMLPackage);
 			System.out.println(XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true));
@@ -89,7 +93,6 @@ public class DocxToPdfConvertor {
 	}
 	public static void convertDocxFileToPDF(String docxPath,String pdfPath, Map<String, Object> paramsMap){
 		try {
-			
 			WordprocessingMLPackage wordMLPackage = readDocxFile(docxPath);
 			prepare(wordMLPackage);
 			XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true);
@@ -119,21 +122,33 @@ public class DocxToPdfConvertor {
 	public static void replaceParamsInDocxFile(JSONObject sfobj,String docxPath,String outputDocxPath, Map<String, Object> paramsMap){
 
 		try {
+			//XWPFDocument  doc = new XWPFDocument(new FileInputStream(docxPath));
+			//ByteArrayOutputStream baos = null;
+			//baos = new ByteArrayOutputStream();
+			//doc.write(baos);
+			//doc.close();
+			// baos.toByteArray();
+			//WordprocessingMLPackage wordMLPackage = readDocxFile( baos.toByteArray());
 			WordprocessingMLPackage wordMLPackage = readDocxFile(docxPath);
+			log.info(" DocxToPdfConvertor1  docxPath= "+docxPath);
 			prepare(wordMLPackage);
-			System.out.println(XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true));
+			log.info(" DocxToPdfConvertor2 sfobj= "+sfobj);
+			//System.out.println(XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true));
 			//replaceParagraph(paramsMap, wordMLPackage, wordMLPackage.getMainDocumentPart());
 			replacePlaceholder(sfobj, wordMLPackage, paramsMap);
+			log.info(" DocxToPdfConvertor3 paramsMap "+paramsMap);
 			replacePlaceholderInHeader( wordMLPackage, paramsMap);
+			log.info(" DocxToPdfConvertor4 outputDocxPath= "+outputDocxPath);
 			writeDocxToStream( wordMLPackage, outputDocxPath);
+			log.info(" DocxToPdfConvertor5  ");
 		} catch (FileNotFoundException e) {
-			log.info("error in replaceParamsInDocxFile1 DocxToPdfConvertor1  "+e.getMessage());
+			log.info("error in DocxToPDF Convertor replaceParamsInDocxFile1 DocxToPdfConvertor1  "+e);
 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Docx4JException e) {
-			log.info("error in replaceParamsInDocxFile1 DocxToPdfConvertor2  "+e.getMessage());
-
+//			log.info("error in replaceParamsInDocxFile1 DocxToPdfConvertor2  "+e.getMessage());
+			log.info("error in replaceParamsInDocxFile1 DocxToPdfConvertor2  "+e);
 		// TODO Auto-generated catch block
 			e.printStackTrace();
 		}catch (Exception e) {
@@ -824,6 +839,7 @@ public class DocxToPdfConvertor {
 		org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
 
 		InputStream is = new FileInputStream(new File(docxPath));
+		
 		WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(is);
 
 		return wordMLPackage;

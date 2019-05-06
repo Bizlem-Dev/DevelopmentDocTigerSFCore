@@ -8,7 +8,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="C:/Users/admin/Downloads/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin/AppData/Roaming/Skype/My Skype Received Files/mail.jar"/>
+	<classpathentry kind="lib" path="D:/DOCTIGER114IPProject/org.apache.commons.lang-2.6.jar/org.apache.commons.lang-2.6.jar"/>
+	<classpathentry kind="lib" path="D:/DOCTIGER114IPProject/java-mail-1.4.4.jar/java-mail-1.4.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

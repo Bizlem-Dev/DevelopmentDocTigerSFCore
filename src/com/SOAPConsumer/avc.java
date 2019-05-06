@@ -32,7 +32,7 @@ String userresult="";
 		//	  String json = "{\"Fetcher_Id\":\"vivek123@bizlem.com\",\"Template_Name\":\"templatetest1\",\"Subject\":[\"sdsvd\"],\"Body\":[],\"Attachment\":[],\"Attachment_Name\":[],\"match\":\"1\",\"Alert\":\"\"}";
 			  String urlParameters =param;
 			  urlParameters = urlParameters.replace(" ", "%20");
-			//  URL url = new URL("http://35.186.166.22:8082/portal/servlet/service/MapMailSolrServ.tem1");
+			//  URL url = new URL("http://104.196.62.35:8082/portal/servlet/service/MapMailSolrServ.tem1");
 			  URL url = new URL(urlStr);
 
 			  URLConnection conn = url.openConnection();
