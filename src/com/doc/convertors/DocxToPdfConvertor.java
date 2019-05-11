@@ -129,6 +129,7 @@ public class DocxToPdfConvertor {
 			//doc.close();
 			// baos.toByteArray();
 			//WordprocessingMLPackage wordMLPackage = readDocxFile( baos.toByteArray());
+			log.info(" DocxToPdfConvertorstart  readDocxFile docxPath= "+docxPath);
 			WordprocessingMLPackage wordMLPackage = readDocxFile(docxPath);
 			log.info(" DocxToPdfConvertor1  docxPath= "+docxPath);
 			prepare(wordMLPackage);
@@ -834,15 +835,20 @@ public class DocxToPdfConvertor {
 
 	private static WordprocessingMLPackage readDocxFile(String docxPath) throws FileNotFoundException, Docx4JException, Exception  
 	{
+//		try {
 		Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
+		log.info("1 in readDocxFile");
 		Log4jConfigurator.configure();            
+		log.info("2");
 		org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
+		log.info("3");
 
 		InputStream is = new FileInputStream(new File(docxPath));
-		
+		log.info("4docxPath"+docxPath);
 		WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(is);
-
+		log.info("5");
 		return wordMLPackage;
+		
 	}
 
 	private static WordprocessingMLPackage readDocxFile(byte[] byteArr) throws FileNotFoundException, Docx4JException, Exception  
