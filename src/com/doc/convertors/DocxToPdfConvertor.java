@@ -12,12 +12,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,7 +49,9 @@ import org.docx4j.wml.ContentAccessor;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
+import org.docx4j.wml.Tbl;
 import org.docx4j.wml.Text;
+import org.docx4j.wml.Tr;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -134,6 +139,14 @@ public class DocxToPdfConvertor {
 			log.info(" DocxToPdfConvertor1  docxPath= "+docxPath);
 			prepare(wordMLPackage);
 			log.info(" DocxToPdfConvertor2 sfobj= "+sfobj);
+			if(paramsMap.containsKey("<<tablearray>>")) {
+				log.info(" DocxToPdfConvertor2 paramsMap.get(<<tablearray>>)= " + paramsMap.get("<<tablearray>>"));
+				JSONObject tblArr=new JSONObject(paramsMap.get("<<tablearray>>").toString());
+				log.info(" DocxToPdfConvertor2 parseTableArray= " + tblArr);
+				
+				parseTableArray(wordMLPackage, tblArr);
+			}
+			
 			//System.out.println(XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true));
 			//replaceParagraph(paramsMap, wordMLPackage, wordMLPackage.getMainDocumentPart());
 			replacePlaceholder(sfobj, wordMLPackage, paramsMap);
@@ -167,6 +180,11 @@ public class DocxToPdfConvertor {
 			WordprocessingMLPackage wordMLPackage = readDocxFile(modifiedFileArr);
 			prepare(wordMLPackage);
 			//System.out.println(XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true));
+			if(paramsMap.containsKey("<<tablearray>>")) {
+				JSONObject tblArr=new JSONObject(paramsMap.get("<<tablearray>>").toString());
+				parseTableArray(wordMLPackage, tblArr);
+			}
+			
 			replaceParagraph(paramsMap, wordMLPackage, wordMLPackage.getMainDocumentPart());
 			replacePlaceholder(sfobj, wordMLPackage, paramsMap);
 			replacePlaceholderInHeader( wordMLPackage, paramsMap);
@@ -1084,5 +1102,105 @@ public class DocxToPdfConvertor {
 //		
 //	}
 //	
+	
+	/* Array Implementation for multiple tables in doc and replace the values */
+	private static void replaceTable(String[] placeholders, List<Map<String, String>> textToAdd,
+			WordprocessingMLPackage template) throws Docx4JException, JAXBException {
+		List<Object> tables = getAllElementFromObject(template.getMainDocumentPart(), Tbl.class);
+
+		// 1. find the table
+		Tbl tempTable = getTemplateTable(tables, placeholders[0]);
+		List<Object> rows = getAllElementFromObject(tempTable, Tr.class);
+		log.info("replaceTable 1");
+		// first row is header, second row is content
+		if (rows.size() == 2) {
+			// this is our template row
+			Tr templateRow = (Tr) rows.get(1);
+
+			for (Map<String, String> replacements : textToAdd) {
+				// 2 and 3 are done in this method
+				addRowToTable(tempTable, templateRow, replacements);
+			}
+
+			// 4. remove the template row
+			tempTable.getContent().remove(templateRow);
+		}
+
+	}
+
+	private static Tbl getTemplateTable(List<Object> tables, String templateKey) throws Docx4JException, JAXBException {
+		for (Iterator<Object> iterator = tables.iterator(); iterator.hasNext();) {
+			Object tbl = iterator.next();
+			List<?> textElements = getAllElementFromObject(tbl, Text.class);
+			for (Object text : textElements) {
+				Text textElement = (Text) text;
+				if (textElement.getValue() != null && textElement.getValue().equals(templateKey))
+					return (Tbl) tbl;
+			}
+		}
+		return null;
+	}
+
+	private static void addRowToTable(Tbl reviewtable, Tr templateRow, Map<String, String> replacements) {
+		Tr workingRow = (Tr) XmlUtils.deepCopy(templateRow);
+		log.info("addRowToTable 1");
+		List textElements = getAllElementFromObject(workingRow, Text.class);
+		for (Object object : textElements) {
+			Text text = (Text) object;
+			String replacementValue = (String) replacements.get(text.getValue());
+			if (replacementValue != null)
+				text.setValue(replacementValue);
+		}
+
+		reviewtable.getContent().add(workingRow);
+	}
+
+	public static void parseTableArray(WordprocessingMLPackage template, JSONObject tblArr) {
+		try {
+			log.info(" DocxToPdfConvertor2 parseTableArray 1" );
+//		Docx4jSampleForReplaceTable objDocx4jSampleForReplaceTable = new Docx4jSampleForReplaceTable();
+		Iterator keys = tblArr.keys();
+		
+		while (keys.hasNext()) {
+		List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
+		Map<String, String> repl1 = null;
+		// loop to get the dynamic key
+		String currentDynamicKey = (String) keys.next();
+		log.info(" DocxToPdfConvertor2 currentDynamicKey "+currentDynamicKey );
+		// get the value of the dynamic key
+		JSONArray currentDynamicValue = tblArr.getJSONArray(currentDynamicKey);
+		log.info(" DocxToPdfConvertor2 currentDynamicValue "+currentDynamicValue );
+		String placeholder[] = null;
+		int arrCount = 0;
+		for (int i = 0; i < currentDynamicValue.length(); i++) {
+		repl1 = new HashMap<String, String>();
+		JSONObject subJson = currentDynamicValue.getJSONObject(i);
+		if (i == 0) {
+		placeholder = new String[subJson.length()];
+		}
+		log.info(" DocxToPdfConvertor2 subJson 1 : "+subJson );
+		System.out.println("subJson :: " + subJson);
+		Iterator keysJson = subJson.keys();
+
+		while (keysJson.hasNext()) {
+		String subKey = (String) keysJson.next();
+		String subValue = subJson.getString(subKey);
+		repl1.put(subKey, subValue);
+		if (i == 0) {
+		placeholder[arrCount] = subKey;
+		arrCount++;
+		}
+		}
+		mapList.add(repl1);
+		}
+		log.info(" DocxToPdfConvertor2 mapList "+mapList );
+		replaceTable(placeholder, mapList, template);
+
+		}
+		} catch (Exception e) {
+		System.out.println("error :: "+e.getMessage());
+		}
+
+		}
 	
 }
