@@ -132,7 +132,9 @@ logger.info(r);
 		connect();
 		try {
 			// Change to output directory
+			System.out.println("fileName = "+fileName);
 			String cdDir = fileName.substring(0, fileName.lastIndexOf("/") + 1);
+			System.out.println("cdDir = "+cdDir);
 			sftpChannel.cd(cdDir);
 
 			 file = new File(fileName);
@@ -141,7 +143,7 @@ logger.info(r);
 System.out.println(bis);
 
 			File newFile = new File(localDir + "" + file.getName());
-			
+			System.out.println("localDir = "+localDir);
 			// Download file
 			OutputStream os = new FileOutputStream(newFile);
 			BufferedOutputStream bos = new BufferedOutputStream(os);
@@ -167,16 +169,29 @@ System.out.println(bis);
 		String remotePath = "/home/ubuntu/uploaded-templates/";
 		
 		//UploadTemplateServer ftp = new UploadTemplateServer("35.188.238.145",22,"ubuntu","$DocTiger@123$");
-		UploadTemplateServer ftp = new UploadTemplateServer("104.196.62.35",22,"root","B1!4z5L$e#m@Or#@GIn");
-		
+//		UploadTemplateServer ftp = new UploadTemplateServer("104.196.62.35",22,"root","B1!4z5L$e#m@Or#@GIn");
+		UploadTemplateServer ftp = new UploadTemplateServer("35.243.163.58",22,"ubuntu","$DocTiger@123$");
+			
 	//	ftp.upload(localPath, remotePath);
 		
 	      String a=ftp.connect();
-System.out.print(a);
+System.out.print(a);///
+
 		String serv222path= "/home/vil/sling\\ tomcat/apache-tomcat-6.0.35/webapps/ROOT/SFTemplateLibrary/";
 		String servsavepah="D:\\docgenlocal";
-	ftp.download(serv222path+"DocTemplate.docx", servsavepah);
+		
+//	ftp.download(serv222path+"DocTemplate.docx", servsavepah);
+	 //ArrayNew_17-May-2019_11-40-55-238.pdf
 
+		 String servp="/home/ubuntu/apache-tomcat-8.5.31/webapps/ROOT/";        
+		 String rp="D:\\DOCTIGER114IPProject\\testing docx\\reports\\";
+		ftp.download(servp+"ArrayNew_17-May-2019_11-40-55-238.pdf", rp);
+
+	
+	
+	
+	
+	
 	}
 
 }

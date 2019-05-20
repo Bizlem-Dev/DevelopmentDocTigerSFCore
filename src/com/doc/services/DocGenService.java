@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -32,6 +34,12 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.xmlbeans.XmlException;
+import org.docx4j.Docx4jProperties;
+import org.docx4j.convert.out.pdf.PdfConversion;
+import org.docx4j.convert.out.pdf.viaXSLFO.PdfSettings;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.utils.Log4jConfigurator;
 
 import com.doc.convertors.AddTableDataInTemplate;
 import com.doc.convertors.DocxToPdfConvertor;
@@ -139,7 +147,7 @@ JSONObject QRobj = new JSONObject();
 				// Build the data-model
 		JSONObject sfobj = new JSONObject();
 		JSONObject QRobj = null;
-
+		 String	url1 = null;
 				Map<String, Object> data = new HashMap<String, Object>();
 				String url = null;
 				try{
@@ -285,7 +293,7 @@ JSONObject QRobj = new JSONObject();
                            logger.info("applicationId*  "+applicationId);
                         String secretKey=bundle.getString("secretKey");
                         logger.info("secretKey*  "+secretKey);
-                        
+                        /*
                         RestTemplate restTemplate = new RestTemplate();
 				         
 				         
@@ -301,11 +309,45 @@ JSONObject QRobj = new JSONObject();
 				         
 				         HttpEntity<String> entity = new HttpEntity<String>(jsonObj.toString(),headers);
 				         logger.info("22*  ");
-				         String answer = restTemplate.postForObject(bundle.getString("convertorServiceUrl"), entity, String.class);
-				         System.out.println(answer);
-				    
+				         logger.info("3*  "+bundle.getString("convertorServiceUrl"));
+//				         String answer = restTemplate.postForObject(bundle.getString("convertorServiceUrl"), entity, String.class);
+//				         System.out.println(answer); 
+ * */
+ 
+				         
+				         /* Docx to PDF using doc4j */
+//				         Docx4jSampleForReplaceTable objDocx4jSampleForReplaceTable = new Docx4jSampleForReplaceTable();
+//				 		WordprocessingMLPackage template = objDocx4jSampleForReplaceTable.getTemplate(filename);
+				         WordprocessingMLPackage wordMLPackage =readDocxFile(outputDocxPath);
+				         logger.info(" DocxToPdfConvertor1  pdfcovert 345= " + outputDocxPath);
+				         PdfSettings pdfSettings = new PdfSettings();
+				         org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
+				         ///home/ubuntu/apache-tomcat-8.5.31/webapps/ROOT/
+				         int o= outputDocxPath.lastIndexOf("/");
+					       String generatedfile = outputDocxPath.substring(o+1,outputDocxPath.length());
+					       logger.info(" DocxToPdfConvertor1 generatedfile= " + generatedfile);
+				         OutputStream out = new FileOutputStream(new File(bundle.getString("doc_loc")+outputFilename+".pdf"));
+				     
+				         PdfConversion converter = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(
+				        		 wordMLPackage);
+				         logger.info(" DocxToPdfConvertor1 outputFilename= " +outputFilename);
+				         converter.output(out, pdfSettings);
+				         logger.info(" DocxToPdfConvertor1 generatedfile2= " );
+				     	url1 = bundle.getString("doc_loc_ip")+outputFilename+".pdf";
+				         logger.info(" DocxToPdfConvertor1 genurl= " + url);
+				         logger.info(" bundle.getString(\"doc_loc\")+outputFilename+IConstants.EXTENSION_PDF= " + bundle.getString("doc_loc")+outputFilename+".pdf");
+				         //url = bundle.getString("doc_loc_ip")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_PDF;
+//				         end
+				         
+//				         PdfSettings pdfSettings = new PdfSettings();
+//				         org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
+//				         OutputStream out = new FileOutputStream(new File(
+//				         "E:\\HelloWorld.pdf"));
+//				         PdfConversion converter = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(
+//				         template);
+//				         converter.output(out, pdfSettings);
 				         logger.info("3*  ");
-				         logger.info(answer);
+//				         logger.info(answer);
 				         logger.info("4*  ");
                       
                         
@@ -377,7 +419,7 @@ JSONObject QRobj = new JSONObject();
 					logger.info("exc in docgenservice = "+e);
 				//	return "error "+e.getMessage();
 				}
-				return url;
+				return url1;
 			}
 	
 	
@@ -810,4 +852,39 @@ JSONObject QRobj = new JSONObject();
 			 fout.close();
 			 }
 			 }
+
+	private static WordprocessingMLPackage readDocxFile(String docxPath)
+			throws FileNotFoundException, Docx4JException, Exception {
+		Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
+		Log4jConfigurator.configure();
+		org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
+
+		InputStream is = new FileInputStream(new File(docxPath));
+
+		WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(is);
+
+		return wordMLPackage;
+	}
+	public static void main(String  args[]) throws FileNotFoundException, Docx4JException, Exception {
+		String outputDocxPath="D:\\DOCTIGER114IPProject\\testing docx\\abhishek\\";
+		String outputFilename="";
+		  WordprocessingMLPackage wordMLPackage =readDocxFile(outputDocxPath+"TemplateTest.docx");
+	      System.out.println();  
+	      System.out.println(" DocxToPdfConvertor1  pdfcovert 345= " + outputDocxPath);
+	         PdfSettings pdfSettings = new PdfSettings();
+	         org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
+	         ///home/ubuntu/apache-tomcat-8.5.31/webapps/ROOT/
+	         int o= outputDocxPath.lastIndexOf("/");
+		       String generatedfile = outputDocxPath.substring(o+1,outputDocxPath.length());
+		       System.out.println(" DocxToPdfConvertor1 generatedfile= " + generatedfile);
+	         OutputStream out = new FileOutputStream(new File(outputDocxPath+"TemplateTest.pdf"));
+	     
+	         PdfConversion converter = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(
+	        		 wordMLPackage);
+	         System.out.println(" DocxToPdfConvertor1 outputFilename= " +outputFilename);
+	         converter.output(out, pdfSettings);
+	         System.out.println(" DocxToPdfConvertor1 generatedfile2= " );
+	 String    	url2 = outputFilename+".pdf";
+	       System.out.println("url2");
+	}
 }
