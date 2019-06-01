@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
@@ -36,6 +37,7 @@ public class UploadTemplateServer {
 	private Channel channel;
 	private ChannelSftp sftpChannel;
 	
+	
 	public UploadTemplateServer(String host, Integer port, String user, String password) {
 		this.host = host;
 		this.port = port;
@@ -45,7 +47,7 @@ public class UploadTemplateServer {
 
 	public String connect() {
 		String r="";
-		System.out.println("connecting..."+host);
+		System.out.println("connecting..."+host+ " user :: "+user+ "password :: "+password);
 		try {
 			
 //			JSch jsch = new JSch();
@@ -162,20 +164,25 @@ System.out.println(bis);
 
 	public static void main(String[] args) {
 		
-		
+		ResourceBundle bundle = ResourceBundle.getBundle("config");
 		String localPath = "D:\\DocTiger\\CRF - RP Termination.docx";
 		String remotePath = "/home/ubuntu/uploaded-templates/";
-		
+		String SFservIP= bundle.getString("SFservIP");//35.221.183.246
+		String SFservusername=bundle.getString("SFservusername");
+			String 	SFservpass=bundle.getString("SFservpass");//B!zL3M786
+			
+			
+		      System.out.println(("SFservIP "+SFservIP+" SFservusername "+ SFservusername+" SFservpass "+SFservpass));
 		//UploadTemplateServer ftp = new UploadTemplateServer("35.188.238.145",22,"ubuntu","$DocTiger@123$");
-		UploadTemplateServer ftp = new UploadTemplateServer("104.196.62.35",22,"root","B1!4z5L$e#m@Or#@GIn");
+		UploadTemplateServer ftp = new UploadTemplateServer(SFservIP,22,SFservusername,SFservpass);
 		
 	//	ftp.upload(localPath, remotePath);
 		
 	      String a=ftp.connect();
-System.out.print(a);
-		String serv222path= "/home/vil/sling\\ tomcat/apache-tomcat-6.0.35/webapps/ROOT/SFTemplateLibrary/";
-		String servsavepah="D:\\docgenlocal";
-	ftp.download(serv222path+"DocTemplate.docx", servsavepah);
+	      System.out.print(a);
+//		String serv222path= "/home/vil/sling\\ tomcat/apache-tomcat-6.0.35/webapps/ROOT/SFTemplateLibrary/";
+//		String servsavepah="D:\\docgenlocal";
+//	ftp.download(serv222path+"DocTemplate.docx", servsavepah);
 
 	}
 

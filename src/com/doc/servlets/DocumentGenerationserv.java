@@ -106,6 +106,10 @@ public class DocumentGenerationserv extends HttpServlet {
 			String SFservIP= bundle.getString("SFservIP");//35.221.183.246
 			String SFservusername=bundle.getString("SFservusername");
 				String 	SFservpass=bundle.getString("SFservpass");//B!zL3M786
+				
+				
+			      logger.info("SFservIP "+SFservIP+" SFservusername "+ SFservusername+" SFservpass "+SFservpass);
+
 			UploadTemplateServer ut=new UploadTemplateServer(SFservIP,22,SFservusername,SFservpass);
 
 			//UploadTemplateServer ut=new UploadTemplateServer("35.221.183.246",22,"ubuntu","B!zL3M786");
@@ -120,7 +124,7 @@ public class DocumentGenerationserv extends HttpServlet {
 
 		             //	String servsavepah="/home/ubuntu/uploaded-templates";
 	  	String servsavepah=bundle.getString("uploaded_templates_path");
-	  	 logger.info("servsavepah "+servsavepah);
+	  	 logger.info("servsavepah "+servsavepah+"  **  "+SFservpass);
 	  			     //"C:\\upoaded-templates\\";
 
 		String b=	ut.download(serv201path+""+filename, servsavepah);

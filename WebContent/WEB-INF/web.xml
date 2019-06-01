@@ -81,4 +81,14 @@
     <servlet-name>DocGenServtest12</servlet-name>
     <url-pattern>/DocGenServtest12</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SaveAttchment</display-name>
+    <servlet-name>SaveAttchment</servlet-name>
+    <servlet-class>com.doc.servlets.SaveAttchment</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveAttchment</servlet-name>
+    <url-pattern>/SaveAttchment</url-pattern>
+  </servlet-mapping>
 </web-app>
