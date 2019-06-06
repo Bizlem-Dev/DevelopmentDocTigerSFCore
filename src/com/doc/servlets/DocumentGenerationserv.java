@@ -19,6 +19,7 @@ import com.dao.docgeneration.DocGenDAO;
 import com.doc.generation.SFDCDocumentGeneration;
 import com.doc.services.CreateJsonFile;
 import com.doc.services.DocGenService;
+import com.doc.services.SaveTemplateFromURL;
 import com.doc.services.UploadTemplateServer;
 import com.doc.util.IConstants;
 import com.doc.util.Utility;
@@ -52,6 +53,7 @@ public class DocumentGenerationserv extends HttpServlet {
 		String TemplateName = "";
 		String filename = "";
 		String jsonstring = "";
+		String fileurl="";
 		JSONObject obj;
 		try {
 			out=resp.getWriter();
@@ -92,12 +94,19 @@ public class DocumentGenerationserv extends HttpServlet {
 			 TemplateName = resobj.getString("TemplateName");
 
 			filename=resobj.getString("filename");
-			
+			if(resobj.has("TemplateUrl")) {
+			fileurl=resobj.getString("TemplateUrl");
+			}
 		      logger.info("TemplateName::  "+resobj.getString("TemplateName"));
-		      logger.info("filename :: "+resobj.getString("filename"));
+		      logger.info("filename :: "+resobj.getString("filename")+fileurl);
 		      logger.info("jsonstring ::  "+resobj);
 
-			
+		      SaveTemplateFromURL sta = new SaveTemplateFromURL();
+		      try {
+		      sta.saveTemplate(fileurl, bundle.getString("uploaded_templates_path"), TemplateName+".docx");
+		      }catch (Exception e) {
+				// TODO: handle exception
+			}
 			
 			DocGenService objDocGenService = new DocGenService();
 
@@ -110,7 +119,7 @@ public class DocumentGenerationserv extends HttpServlet {
 				
 			      logger.info("SFservIP "+SFservIP+" SFservusername "+ SFservusername+" SFservpass "+SFservpass);
 
-			UploadTemplateServer ut=new UploadTemplateServer(SFservIP,22,SFservusername,SFservpass);
+//			UploadTemplateServer ut=new UploadTemplateServer(SFservIP,22,SFservusername,SFservpass);
 
 			//UploadTemplateServer ut=new UploadTemplateServer("35.221.183.246",22,"ubuntu","B!zL3M786");
                       //	FileUploadServer fus= new FileUploadServer("35.188.238.145",22,"ubuntu","$DocTiger@123$");
@@ -127,8 +136,8 @@ public class DocumentGenerationserv extends HttpServlet {
 	  	 logger.info("servsavepah "+servsavepah+"  **  "+SFservpass);
 	  			     //"C:\\upoaded-templates\\";
 
-		String b=	ut.download(serv201path+""+filename, servsavepah);
-	  	 logger.info("b "+b);
+//		String b=	ut.download(serv201path+""+filename, servsavepah);
+//	  	 logger.info("b "+b);
 
 			
 			CreateJsonFile cj = new CreateJsonFile();

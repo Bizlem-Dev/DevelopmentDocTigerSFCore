@@ -317,7 +317,7 @@ JSONObject QRobj = new JSONObject();
 				       
 				         logger.info("4*  ");
                       
-				         docxurl= bundle.getString("doc_loc_ip")+outputFilename+".docx";
+				         docxurl= bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".docx";
 						logger.info("docxurl = "+docxurl);
 									    
 	                   //	DocxToPdfConvertor.replaceParamsInDocxFile( sfobj, templateFileVO.getTemaplatePath(), bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, data);
