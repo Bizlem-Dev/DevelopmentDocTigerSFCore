@@ -321,24 +321,25 @@ JSONObject QRobj = new JSONObject();
 				         /* Docx to PDF using doc4j */
 //				         Docx4jSampleForReplaceTable objDocx4jSampleForReplaceTable = new Docx4jSampleForReplaceTable();
 //				 		WordprocessingMLPackage template = objDocx4jSampleForReplaceTable.getTemplate(filename);
-//				         WordprocessingMLPackage wordMLPackage =readDocxFile(outputDocxPath);
-//				         logger.info(" DocxToPdfConvertor1  pdfcovert 345= " + outputDocxPath);
-//				         PdfSettings pdfSettings = new PdfSettings();
-//				         org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
-//				         ///home/ubuntu/apache-tomcat-8.5.31/webapps/ROOT/
-//				         int o= outputDocxPath.lastIndexOf("/");
-//					       String generatedfile = outputDocxPath.substring(o+1,outputDocxPath.length());
-//					       logger.info(" DocxToPdfConvertor1 generatedfile= " + generatedfile);
-//				         OutputStream out = new FileOutputStream(new File(bundle.getString("doc_loc")+outputFilename+".pdf"));
-//				     
-//				         PdfConversion converter = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(
-//				        		 wordMLPackage);
-//				         logger.info(" DocxToPdfConvertor1 outputFilename= " +outputFilename);
-//				         converter.output(out, pdfSettings);
-//				         logger.info(" DocxToPdfConvertor1 generatedfile2= " );
+				         WordprocessingMLPackage wordMLPackage =readDocxFile(outputDocxPath);
+				         logger.info(" DocxToPdfConvertor1  pdfcovert 345= " + outputDocxPath);
+				         PdfSettings pdfSettings = new PdfSettings();
+				         org.docx4j.convert.out.pdf.viaXSLFO.Conversion.log.setLevel(Level.OFF);
+				         ///home/ubuntu/apache-tomcat-8.5.31/webapps/ROOT/
+				         int o= outputDocxPath.lastIndexOf("/");
+					       String generatedfile = outputDocxPath.substring(o+1,outputDocxPath.length());
+					       logger.info(" DocxToPdfConvertor1 generatedfile= " + generatedfile);
+				         OutputStream out = new FileOutputStream(new File(bundle.getString("doc_loc")+outputFilename+".pdf"));
+				     
+				         PdfConversion converter = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(
+				        		 wordMLPackage);
+				         logger.info(" DocxToPdfConvertor1 outputFilename= " +outputFilename);
+				         converter.output(out, pdfSettings);
+				         logger.info(" DocxToPdfConvertor1 generatedfile2= " );
+				         url1 = bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf";
 //				     	url1 = bundle.getString("doc_loc_ip")+outputFilename+".pdf";
-//				         logger.info(" DocxToPdfConvertor1 genurl= " + url);
-//				         logger.info(" bundle.getString(\"doc_loc\")+outputFilename+IConstants.EXTENSION_PDF= " + bundle.getString("doc_loc")+outputFilename+".pdf");
+				         logger.info(" DocxToPdfConvertor1 genurl= " + url);
+				         logger.info(" bundle.getString(\"doc_loc\")+outputFilename+IConstants.EXTENSION_PDF= " + bundle.getString("doc_loc")+outputFilename+".pdf");
                    
 				         //url = bundle.getString("doc_loc_ip")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_PDF;
 //				         end
