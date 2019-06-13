@@ -65,6 +65,7 @@ import org.xlsx4j.sml.Workbook;
 import org.xlsx4j.sml.Worksheet;
 
 import com.doc.services.ApiCall;
+import com.doc.services.ReplaceTextWithImage;
 import com.doc.util.Utility;
 
 public class DocxToPdfConvertor {
@@ -146,6 +147,13 @@ public class DocxToPdfConvertor {
 				
 				parseTableArray(wordMLPackage, tblArr);
 			}
+			try {
+				//replace link with image 
+				///home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Images
+				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
 			
 			//System.out.println(XmlUtils.marshaltoString(wordMLPackage.getMainDocumentPart().getJaxbElement(), true, true));
 			//replaceParagraph(paramsMap, wordMLPackage, wordMLPackage.getMainDocumentPart());
@@ -183,6 +191,14 @@ public class DocxToPdfConvertor {
 			if(paramsMap.containsKey("<<tablearray>>")) {
 				JSONObject tblArr=new JSONObject(paramsMap.get("<<tablearray>>").toString());
 				parseTableArray(wordMLPackage, tblArr);
+			}
+
+			try {
+				//replace link with image 
+				///home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Images
+				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
 			
 			replaceParagraph(paramsMap, wordMLPackage, wordMLPackage.getMainDocumentPart());

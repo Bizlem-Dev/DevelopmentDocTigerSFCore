@@ -33,7 +33,7 @@ public class SaveTemplateFromURL {
 		String resp = "";
 
 		try {
-
+			fileurl=fileurl.replace(" ", "%20");
 			BufferedInputStream in = new BufferedInputStream(new URL(fileurl).openStream());
 			FileOutputStream fileOutputStream = new FileOutputStream(savepath + filename);
 			byte dataBuffer[] = new byte[1024];
