@@ -11,7 +11,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 @SuppressWarnings("unchecked")
-public class abc {
+public class abc1 {
     public static void main(String[] args) {
         try {
         String sourceDir = "C:/Documents/04-Request-Headers.pdf"; // Pdf files are read from this folder

@@ -68,6 +68,7 @@ import org.xlsx4j.sml.Worksheet;
 
 import com.doc.services.ApiCall;
 import com.doc.util.Utility;
+import com.doc.services.ReplaceTextWithImage;
 
 public class DocxToPdfConvertor {
 	static ResourceBundle bundle = ResourceBundle.getBundle("config");
@@ -141,6 +142,7 @@ public class DocxToPdfConvertor {
 			// doc.close();
 			// baos.toByteArray();
 			// WordprocessingMLPackage wordMLPackage = readDocxFile( baos.toByteArray());
+			log.info(" replaceParamsInDocxFile  start= ");
 			WordprocessingMLPackage wordMLPackage = readDocxFile(docxPath);
 			log.info(" DocxToPdfConvertor1  docxPath= " + docxPath);
 			prepare(wordMLPackage);
@@ -156,6 +158,13 @@ public class DocxToPdfConvertor {
 				log.info(" DocxToPdfConvertor2 parseTableArray= " + tblArr);
 				
 				parseTableArray(wordMLPackage, tblArr);
+			}
+			try {
+				//replace link with image 
+				///home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Images
+				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
 			replacePlaceholder(sfobj, wordMLPackage, paramsMap);
 //			log.info(" DocxToPdfConvertor3 paramsMap " + paramsMap);
@@ -194,6 +203,13 @@ public class DocxToPdfConvertor {
 			if(paramsMap.containsKey("<<tablearray>>")) {
 				JSONObject tblArr=new JSONObject(paramsMap.get("<<tablearray>>").toString());
 				parseTableArray(wordMLPackage, tblArr);
+			}
+			try {
+				//replace link with image 
+				///home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Images
+				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
 			replaceParagraph(paramsMap, wordMLPackage, wordMLPackage.getMainDocumentPart());
 			
