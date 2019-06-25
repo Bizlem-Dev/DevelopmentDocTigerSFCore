@@ -150,7 +150,7 @@ public class DocxToPdfConvertor {
 			try {
 				//replace link with image 
 				///home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Images
-				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
+//				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -196,7 +196,7 @@ public class DocxToPdfConvertor {
 			try {
 				//replace link with image 
 				///home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Images
-				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
+//				ReplaceTextWithImage.ReplaceLinkWithImage(paramsMap, bundle.getString("Imagepathforlink"), wordMLPackage);
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
