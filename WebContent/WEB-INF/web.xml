@@ -91,4 +91,14 @@
     <servlet-name>SaveAttchment</servlet-name>
     <url-pattern>/SaveAttchment</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Testpdfgen</display-name>
+    <servlet-name>Testpdfgen</servlet-name>
+    <servlet-class>com.doc.servlets.Testpdfgen</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Testpdfgen</servlet-name>
+    <url-pattern>/Testpdfgen</url-pattern>
+  </servlet-mapping>
 </web-app>

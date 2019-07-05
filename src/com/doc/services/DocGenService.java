@@ -31,6 +31,8 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.xmlbeans.XmlException;
@@ -317,14 +319,18 @@ JSONObject QRobj = new JSONObject();
 				       
 				         logger.info("4*  ");
                       
-				         docxurl= bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".docx";
+				         
 						logger.info("docxurl = "+docxurl);
-									    
+						logger.info("bundle.getString(\"doc_loc_ip\")+\"Attachment/\"+outputFilename+\".docx\" = "+bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".docx");
+//						logger.info("bundle.getString(\"doc_loc_ip\")+\"Attachment/\"+outputFilename+\".pdf\" = "+bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf");
+						
+						createpdfpio("/home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Attachment/"+outputFilename+".docx" , "/home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Attachment/"+outputFilename+".pdf");
+						docxurl= bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf";		    
 	                   //	DocxToPdfConvertor.replaceParamsInDocxFile( sfobj, templateFileVO.getTemaplatePath(), bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, data);
 	                   //	RtfToPdfConvertor.convertDocxFileToPDF(bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, outputPdfPath, data, bundle.getString("doc_loc"));
 	
 	
-						 /* Docx to PDF using doc4j */
+						 /* Docx to PDF using doc4j
 //				         Docx4jSampleForReplaceTable objDocx4jSampleForReplaceTable = new Docx4jSampleForReplaceTable();
 //				 		WordprocessingMLPackage template = objDocx4jSampleForReplaceTable.getTemplate(filename);
 				         WordprocessingMLPackage wordMLPackage =readDocxFile(outputDocxPath);
@@ -345,6 +351,8 @@ JSONObject QRobj = new JSONObject();
 				  String   	url1 = bundle.getString("doc_loc_ip")+outputFilename+".pdf";
 				         logger.info(" DocxToPdfConvertor1 genurl= " + url);
 				         logger.info(" bundle.getString(\"doc_loc\")+outputFilename+IConstants.EXTENSION_PDF= " + bundle.getString("doc_loc")+outputFilename+".pdf");
+				       
+				         */
 				         //url = bundle.getString("doc_loc_ip")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_PDF;
 //				         end
 				         
@@ -870,4 +878,32 @@ JSONObject QRobj = new JSONObject();
 
 		return wordMLPackage;
 	}
+	
+	
+	// convert to pdf new
+	
+	public void createpdfpio(String inputFile ,String outputFile) {
+		try{
+		//String inputFile="D:\\doctiger\\WelcomeLetter_25-Jun-2019_17-31-24-612.docx";
+		// String outputFile="D:\\doctiger\\WelcomeLetter_25-Jun-2019_17-31-24-612.pdf";
+		System.out.println("inputFile:" + inputFile + ",outputFile:"+ outputFile);
+		FileInputStream in=new FileInputStream(inputFile);
+		logger.info("1 :: inputFile"+inputFile);
+		XWPFDocument document=new XWPFDocument(in);
+		
+		File outFile=new File(outputFile);
+		logger.info("2:: "+outputFile);
+		OutputStream out=new FileOutputStream(outFile);
+		PdfOptions options=null;
+		logger.info("3:: ");
+		PdfConverter.getInstance().convert(document,out,options);
+		logger.info("4 ");
+
+		}catch(Exception e){
+//		e.printStackTrace();
+		   logger.info("exception in createpdfpio :: "+e);
+		}
+
+		}
+		
 }
