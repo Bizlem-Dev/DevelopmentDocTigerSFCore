@@ -320,12 +320,20 @@ JSONObject QRobj = new JSONObject();
 				         logger.info("4*  ");
                       
 				         
-						logger.info("docxurl = "+docxurl);
-						logger.info("bundle.getString(\"doc_loc_ip\")+\"Attachment/\"+outputFilename+\".docx\" = "+bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".docx");
-//						logger.info("bundle.getString(\"doc_loc_ip\")+\"Attachment/\"+outputFilename+\".pdf\" = "+bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf");
 						
-						createpdfpio("/home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Attachment/"+outputFilename+".docx" , "/home/ubuntu/generationTomcat/apache-tomcat-8.5.41/webapps/ROOT/Attachment/"+outputFilename+".pdf");
-						docxurl= bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf";		    
+						logger.info(" outputFilename docx " +bundle.getString("doc_loc")+outputFilename+".docx");
+						logger.info(" outputFilename pdf " +bundle.getString("doc_loc")+outputFilename+".pdf");
+//						logger.info("bundle.getString(\"doc_loc_ip\")+\"Attachment/\"+outputFilename+\".pdf\" = "+bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf");
+						//doc_loc
+						try {
+						String pdfres= ConvertDocxToPDF.getWordToPdfData(bundle.getString("doc_loc")+outputFilename+".docx", bundle.getString("doc_loc")+outputFilename+".pdf");
+						logger.info("ConvertDocxToPDF.getWordToPdfData pdfres = "+pdfres);
+						}catch (Exception e) {
+							logger.info("exc in getWordToPdfData = "+e);
+							// TODO: handle exception
+						}
+						docxurl= bundle.getString("doc_loc_ip")+"Attachment/"+outputFilename+".pdf";	
+						logger.info("docxurl = "+docxurl);
 	                   //	DocxToPdfConvertor.replaceParamsInDocxFile( sfobj, templateFileVO.getTemaplatePath(), bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, data);
 	                   //	RtfToPdfConvertor.convertDocxFileToPDF(bundle.getString("doc_loc")+outputFilename+IConstants.PERIOD+IConstants.EXTENSION_DOCX, outputPdfPath, data, bundle.getString("doc_loc"));
 	

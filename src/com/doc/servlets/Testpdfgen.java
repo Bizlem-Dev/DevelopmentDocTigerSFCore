@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+//import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 /**
  * Servlet implementation class Testpdfgen
@@ -46,7 +47,7 @@ public class Testpdfgen extends HttpServlet {
 			FileInputStream in=new FileInputStream(inputFile);
 			out.println("1 :: inputFile"+inputFile);
 			XWPFDocument document=new XWPFDocument(in);
-			
+			out.println("1 :: document");
 			File outFile=new File(outputFile);
 			out.println("2:: "+outputFile);
 			OutputStream out1=new FileOutputStream(outFile);
